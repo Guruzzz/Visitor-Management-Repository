@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
@@ -82,7 +82,7 @@ export function LoginPage() {
 
           <div className="mt-8 pt-8 border-t border-slate-700/50 text-center">
             <p className="text-slate-400 text-sm">
-              For demo access, contact your administrator
+              @Salto Developers 2026
             </p>
           </div>
         </div>
