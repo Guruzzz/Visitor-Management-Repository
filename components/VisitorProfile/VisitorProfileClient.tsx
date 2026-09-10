@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
@@ -12,9 +12,8 @@ import {
   TopDepartmentsSection,
   VisitHistorySection,
   LoadingStates,
-  InitialLoadingSpinner,
 } from './index'
-import type { Visitor, Visit } from '@/lib/visitors'
+import type { Visitor } from '@/lib/visitors'
 
 interface VisitorStatistics {
   total_visits: number
