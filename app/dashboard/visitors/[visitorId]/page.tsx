@@ -1,19 +1,19 @@
-'use server'
+﻿'use server'
 
 import { notFound } from 'next/navigation'
 import { isValidUUID } from '@/lib/utils'
 import { VisitorProfileClient } from '@/components/VisitorProfile/VisitorProfileClient'
 
 interface VisitorProfilePageProps {
-  params: {
+  params: Promise<{
     visitorId: string
-  }
+  }>
 }
 
 export default async function VisitorProfilePage({
   params,
 }: VisitorProfilePageProps) {
-  const { visitorId } = params
+  const { visitorId } = await params
 
   // Server-side validation: Check if visitorId is a valid UUID
   if (!isValidUUID(visitorId)) {
