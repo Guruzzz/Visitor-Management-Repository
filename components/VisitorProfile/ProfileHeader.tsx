@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 import { format } from 'date-fns'
-import { Calendar, Badge, Loader } from 'lucide-react'
+import { Badge } from 'lucide-react'
 import type { Visitor, Visit } from '@/lib/visitors'
 
 interface ProfileHeaderProps {
