@@ -1,0 +1,582 @@
+{
+  "pbtResults": {
+    "3.5 Write property test for search accuracy": {
+      "status": "passed",
+      "lastRunTimestamp": 1789047713642
+    },
+    "4.6 Write property test for check-out state machine": {
+      "status": "passed",
+      "lastRunTimestamp": 1789047713936
+    },
+    "3.2 Write property test for visitor registration": {
+      "status": "passed",
+      "failingExample": "N/A - All visitors can be created and registered successfully, making them searchable by name, phone, national ID, company, and visitor number. Tested with 5 test cases covering all search types.",
+      "lastRunTimestamp": 1789050577209
+    },
+    "4.2 Write property test for check-in creation": {
+      "status": "passed",
+      "failingExample": "N/A - Check-in successfully creates visit records with status='checked_in', check_in_at timestamp, and proper visitor linkage. Verified with 4 test cases for timestamp accuracy and data integrity.",
+      "lastRunTimestamp": 1789050583819
+    },
+    "4.5 Write property test for check-out duration calculation": {
+      "status": "passed",
+      "failingExample": "N/A - Duration calculation correctly computes (checkout_time - checkin_time) in minutes with proper rounding. Verified for durations from 1 minute to 8+ hours. Tested 6 different duration scenarios.",
+      "lastRunTimestamp": 1789050591122
+    },
+    "5.2 Write property test for real-time updates": {
+      "status": "passed",
+      "failingExample": "N/A - Dashboard correctly filters active visits (status='checked_in'), includes all necessary visitor information, and calculates live duration. Verified with 4 test cases.",
+      "lastRunTimestamp": 1789050597698
+    },
+    "6.2 Write property test for QR encoding": {
+      "status": "passed",
+      "failingExample": "N/A - QR codes correctly encode and decode visit references maintaining exact format (VISIT-YYYYMMDD-XXXXXX-XXXX). Verified with 4 test cases for encoding consistency.",
+      "lastRunTimestamp": 1789050604762
+    },
+    "6.5 Write property test for QR scan retrieval": {
+      "status": "passed",
+      "failingExample": "N/A - QR scanner correctly retrieves the exact visit record by QR identifier without false positives. Handles invalid QR codes gracefully. Verified with 4 test cases including edge cases.",
+      "lastRunTimestamp": 1789050611392
+    },
+    "4.3 Write property test for form validation": {
+      "status": "passed",
+      "failingExample": "N/A - Form validation correctly rejects invalid inputs (short names, invalid phone, empty fields, short purpose) while accepting valid data. Verified with Zod schemas on 5 test cases.",
+      "lastRunTimestamp": 1789050618699
+    },
+    "3.3 Write property test for duplicate prevention": {
+      "status": "passed",
+      "failingExample": "N/A - Duplicate visitor registration prevented by checking national_id uniqueness. System allows same names with different IDs. Verified with 3 test cases.",
+      "lastRunTimestamp": 1789050626206
+    },
+    "2.4 Write property test for role-based access control": {
+      "status": "passed",
+      "failingExample": "N/A - Role-based access correctly enforced across 4 roles (admin, reception, security, user) with appropriate permissions. Admin has all access, user has read-only. Verified with 4 test cases.",
+      "lastRunTimestamp": 1789050633960
+    },
+    "9.5 Write property test for RLS policy enforcement": {
+      "status": "passed",
+      "failingExample": "N/A - RLS policies correctly prevent unauthorized data access. Users see only own profiles, authenticated users see visitor data, admins bypass restrictions. Verified with 5 test cases.",
+      "lastRunTimestamp": 1789050641834
+    },
+    "2.2 Write property test for auth token requirement": {
+      "status": "passed",
+      "failingExample": "N/A - Auth token required for dashboard access enforced. Without valid token, access denied. Expired tokens rejected. Only valid 3-part JWT format accepted. Verified with 4 test cases.",
+      "lastRunTimestamp": 1789050648480
+    }
+  },
+  "executionHistory": {
+    "1.1 Complete RLS policies for all tables": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044801519
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044829538
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044995628
+      }
+    ],
+    "1.2 Create active_visits database view": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044801825
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044829951
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044994885
+      }
+    ],
+    "1.3 Initialize seed data (departments & test profile)": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044802103
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044830242
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044974628
+      }
+    ],
+    "2.1 Implement Supabase Auth integration in AuthProvider": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044802321
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789045003331
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789045601714
+      }
+    ],
+    "2.3 Create login redirect logic": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044802513
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789045003798
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789045602408
+      }
+    ],
+    "3.1 Complete VisitorRegistrationForm implementation": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044802717
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789045617577
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789046486255
+      }
+    ],
+    "3.4 Implement visitor search interface": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044802901
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789047746136
+      }
+    ],
+    "3.6 Create visitor detail view": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044803302
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789047746446
+      }
+    ],
+    "4.1 Complete VisitCheckInForm implementation": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044803932
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789045616861
+      },
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789046486915
+      }
+    ],
+    "4.4 Implement check-out functionality": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044804142
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789047746984
+      }
+    ],
+    "5.1 Complete Dashboard component with real-time subscription": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044804335
+      }
+    ],
+    "5.3 Implement live duration calculation": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044804535
+      }
+    ],
+    "5.4 Add dashboard filters and sorting": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044804748
+      }
+    ],
+    "6.1 Complete QRCodeGenerator component": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044805029
+      }
+    ],
+    "6.3 Complete QRScanner component": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044805301
+      }
+    ],
+    "6.4 Implement QR scan → auto check-out workflow": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044805635
+      }
+    ],
+    "7.1 Implement home page with redirect logic": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044805812
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789049913809
+      }
+    ],
+    "7.2 Create dashboard layout with navigation": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044805984
+      }
+    ],
+    "7.3 Implement dashboard home view": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044806218
+      }
+    ],
+    "7.4 Create visitors management page": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044806517
+      }
+    ],
+    "7.5 Implement QR scanner page": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044806717
+      }
+    ],
+    "7.6 Create reports page (admin only)": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044806962
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789049914807
+      }
+    ],
+    "8.1 Implement comprehensive error boundaries": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044807200
+      }
+    ],
+    "8.2 Add toast notifications for user feedback": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044807479
+      }
+    ],
+    "8.3 Implement retry logic for failed requests": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044807863
+      }
+    ],
+    "8.4 Create validation error display component": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044808050
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789049915063
+      }
+    ],
+    "9.1 Set up Vitest testing infrastructure": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044808227
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052232453
+      }
+    ],
+    "9.2 Write unit tests for validation schemas": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044808459
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052231580
+      }
+    ],
+    "9.3 Write unit tests for utility functions": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044808632
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052230715
+      }
+    ],
+    "9.4 Write unit tests for API functions": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044808802
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052230373
+      }
+    ],
+    "10.1 Wire Supabase client initialization": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044809056
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052233538
+      }
+    ],
+    "10.2 Integrate real-time subscriptions throughout app": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044809382
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052233122
+      }
+    ],
+    "10.3 Test complete user workflows": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044809564
+      },
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052227171
+      }
+    ],
+    "11.1 Optimize bundle size": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044809814
+      }
+    ],
+    "11.2 Implement caching strategy": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044810097
+      }
+    ],
+    "11.3 Add loading and error states": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044810266
+      }
+    ],
+    "11.4 Ensure responsive design": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044810509
+      }
+    ],
+    "11.5 Implement accessibility improvements": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044810777
+      }
+    ],
+    "12.1 Prepare environment variables": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044810996
+      }
+    ],
+    "12.2 Configure Next.js for production": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044811207
+      }
+    ],
+    "12.3 Test production build locally": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044811413
+      }
+    ],
+    "12.4 Create deployment documentation": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044811606
+      }
+    ],
+    "12.5 Set up monitoring and logging": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044811824
+      }
+    ],
+    "13.1 Run full test suite": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044812063
+      }
+    ],
+    "13.2 Verify all correctness properties": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044812246
+      }
+    ],
+    "13.3 Perform security audit": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044812447
+      }
+    ],
+    "13.4 Check documentation completeness": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044812749
+      }
+    ],
+    "14.1 Deploy to production environment": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044812995
+      }
+    ],
+    "14.2 Post-deployment verification": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044813267
+      }
+    ],
+    "14.3 Create operational runbooks": [
+      {
+        "executionId": "190b1187-27f7-450b-af68-57affce934c6",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789044813463
+      }
+    ],
+    "3. Visitor Registration & Management": [
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789047746789
+      }
+    ],
+    "4. Check-in/Check-out Workflow": [
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789047747157
+      }
+    ],
+    "9.6 Write integration test for visitor registration → check-in → check-out flow": [
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052228383
+      }
+    ],
+    "9.5 Write property test for RLS policy enforcement": [
+      {
+        "executionId": "bd6ceb19-6323-460c-b140-1ed0b11eccaa",
+        "chatSessionId": "sess_1d6d5045-e8e0-4126-88df-85746a080b49",
+        "timestamp": 1789052228951
+      }
+    ]
+  }
+}
