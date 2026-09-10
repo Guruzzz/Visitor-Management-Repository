@@ -13,7 +13,7 @@ import {
   VisitHistorySection,
   LoadingStates,
 } from './index'
-import type { Visitor } from '@/lib/visitors'
+import type { Visitor, Visit } from '@/lib/visitors'
 
 interface VisitorStatistics {
   total_visits: number
