@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns'
 import { Badge } from 'lucide-react'
-import type { Visitor, Visit } from '@/lib/visitors'
+import type { Visitor } from '@/lib/visitors'
 
 interface ProfileHeaderProps {
   visitor: Visitor | null
