@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState, useCallback } from 'react'
 import {
@@ -19,6 +19,8 @@ import {
   AlertCircle,
   Loader,
   X,
+  Building2,
+  TrendingUp,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/components/Toast'
@@ -243,69 +245,98 @@ export function Dashboard() {
         </p>
       </div>
 
-      {/* Stats Cards */}
+      {/* Enhanced Animated Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="glass p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-500/20 rounded-lg">
-              <Users size={24} className="text-blue-400" />
+        {/* Visitors Inside Card */}
+        <div className="group relative glass p-6 overflow-hidden hover:border-blue-500/30 transition-all duration-300 animate-slide-up">
+          {/* Animated background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl border border-blue-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+              <Users size={24} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
             </div>
             <div>
-              <p className="text-slate-400 text-sm">Visitors Inside</p>
-              <p className="text-2xl font-bold">{visits.length}</p>
+              <p className="text-slate-400 text-sm font-medium mb-1">Visitors Inside</p>
+              <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform">
+                {visits.length}
+              </p>
             </div>
+          </div>
+          
+          {/* Shimmer effect on hover */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="animate-shimmer" />
           </div>
         </div>
 
-        <div className="glass p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-purple-500/20 rounded-lg">
-              <Filter size={24} className="text-purple-400" />
+        {/* Departments Card */}
+        <div className="group relative glass p-6 overflow-hidden hover:border-purple-500/30 transition-all duration-300 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-purple-500/20 to-purple-600/10 rounded-xl border border-purple-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+              <Filter size={24} className="text-purple-400 group-hover:text-purple-300 transition-colors" />
             </div>
             <div>
-              <p className="text-slate-400 text-sm">Departments</p>
-              <p className="text-2xl font-bold">{departments.length}</p>
+              <p className="text-slate-400 text-sm font-medium mb-1">Departments</p>
+              <p className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform">
+                {departments.length}
+              </p>
             </div>
+          </div>
+          
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="animate-shimmer" />
           </div>
         </div>
 
-        <div className="glass p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-green-500/20 rounded-lg">
-              <Clock size={24} className="text-green-400" />
+        {/* Companies Card */}
+        <div className="group relative glass p-6 overflow-hidden hover:border-green-500/30 transition-all duration-300 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-xl border border-green-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+              <Building2 size={24} className="text-green-400 group-hover:text-green-300 transition-colors" />
             </div>
             <div>
-              <p className="text-slate-400 text-sm">Companies</p>
-              <p className="text-2xl font-bold">{companies.length}</p>
+              <p className="text-slate-400 text-sm font-medium mb-1">Companies</p>
+              <p className="text-3xl font-bold bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform">
+                {companies.length}
+              </p>
             </div>
+          </div>
+          
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="animate-shimmer" />
           </div>
         </div>
       </div>
 
-      {/* Notifications */}
+      {/* Enhanced Notifications with animations */}
       {checkoutSuccess && (
-        <div className="glass p-4 mb-6 border border-green-500/20 bg-green-500/10 rounded-lg flex items-center gap-3">
-          <CheckCircle size={20} className="text-green-400" />
+        <div className="glass p-4 mb-6 border border-green-500/20 bg-green-500/10 rounded-xl flex items-center gap-3 animate-scale-in">
+          <CheckCircle size={20} className="text-green-400 animate-pulse-slow" />
           <p className="text-green-300 text-sm">{checkoutSuccess}</p>
         </div>
       )}
 
       {checkoutError && (
-        <div className="glass p-4 mb-6 border border-red-500/20 bg-red-500/10 rounded-lg flex items-center gap-3">
-          <AlertCircle size={20} className="text-red-400" />
+        <div className="glass p-4 mb-6 border border-red-500/20 bg-red-500/10 rounded-xl flex items-center gap-3 animate-scale-in">
+          <AlertCircle size={20} className="text-red-400 animate-pulse-slow" />
           <p className="text-red-300 text-sm">{checkoutError}</p>
         </div>
       )}
 
-      {/* Main Panel */}
-      <div className="glass p-6 md:p-8">
-        {/* Search and Filters */}
+      {/* Enhanced Main Panel */}
+      <div className="glass p-6 md:p-8 rounded-2xl">
+        {/* Enhanced Search and Filters */}
         <div className="mb-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Search Input */}
-            <div className="relative">
+            {/* Enhanced Search Input */}
+            <div className="relative group">
               <Search
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-blue-400 transition-colors"
                 size={18}
               />
               <input
@@ -313,20 +344,20 @@ export function Dashboard() {
                 placeholder="Search by visitor name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-50 placeholder-slate-400 focus:border-blue-500 focus:bg-slate-800 transition-all"
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-50 placeholder-slate-400 focus:border-blue-500 focus:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 transition-all"
               />
             </div>
 
-            {/* Sort Options */}
-            <div className="relative">
+            {/* Enhanced Sort Options */}
+            <div className="relative group">
               <ChevronDown
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-blue-400 transition-colors"
                 size={18}
               />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-50 focus:border-blue-500 focus:bg-slate-800 transition-all appearance-none"
+                className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-50 focus:border-blue-500 focus:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none"
               >
                 <option value="check_in_time">Sort by Check-in Time</option>
                 <option value="duration">Sort by Duration</option>
@@ -335,18 +366,18 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* Filters */}
+          {/* Enhanced Filters */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {departments.length > 0 && (
-              <div className="relative">
+              <div className="relative group">
                 <ChevronDown
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-purple-400 transition-colors"
                   size={18}
                 />
                 <select
                   value={departmentFilter}
                   onChange={(e) => setDepartmentFilter(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-50 text-sm focus:border-blue-500 focus:bg-slate-800 transition-all appearance-none"
+                  className="w-full px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-50 text-sm focus:border-purple-500 focus:bg-slate-800 focus:ring-2 focus:ring-purple-500/20 transition-all appearance-none"
                 >
                   <option value="">All Departments</option>
                   {departments.map((dept) => (
@@ -359,15 +390,15 @@ export function Dashboard() {
             )}
 
             {companies.length > 0 && (
-              <div className="relative">
+              <div className="relative group">
                 <ChevronDown
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-green-400 transition-colors"
                   size={18}
                 />
                 <select
                   value={companyFilter}
                   onChange={(e) => setCompanyFilter(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-50 text-sm focus:border-blue-500 focus:bg-slate-800 transition-all appearance-none"
+                  className="w-full px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-50 text-sm focus:border-green-500 focus:bg-slate-800 focus:ring-2 focus:ring-green-500/20 transition-all appearance-none"
                 >
                   <option value="">All Companies</option>
                   {companies.map((company) => (
@@ -381,16 +412,16 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Visitor List */}
+        {/* Visitor List with enhanced cards */}
         {isLoading ? (
           <div className="flex justify-center py-12">
-            <div className="text-center">
+            <div className="text-center animate-scale-in">
               <Loader size={32} className="mx-auto mb-4 animate-spin text-slate-400" />
               <p className="text-slate-400">Loading visitors...</p>
             </div>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-center py-12 animate-scale-in">
             <Users size={48} className="mx-auto text-slate-600 mb-4" />
             <p className="text-slate-400">
               {searchQuery || departmentFilter || companyFilter
@@ -400,80 +431,86 @@ export function Dashboard() {
           </div>
         ) : (
           <div className="space-y-4">
-            {filtered.map((visit) => (
+            {filtered.map((visit, index) => (
               <div
                 key={visit.id}
-                className="glass-sm p-4 md:p-6 hover:bg-white/10 transition-all duration-200"
+                className="group relative glass-sm p-4 md:p-6 rounded-xl hover:bg-white/5 hover:border-blue-500/20 transition-all duration-300 animate-slide-up overflow-hidden"
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm text-slate-400">Visitor</p>
-                    <p className="text-lg font-semibold text-slate-50">
-                      {visit.visitors.full_name}
-                    </p>
-                    <p className="text-sm text-slate-400">
-                      {visit.visitors.visitor_number}
-                    </p>
+                {/* Subtle hover gradient */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="relative z-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p className="text-sm text-slate-400 mb-1">Visitor</p>
+                      <p className="text-lg font-semibold text-slate-50 group-hover:text-blue-300 transition-colors">
+                        {visit.visitors.full_name}
+                      </p>
+                      <p className="text-sm text-slate-400">
+                        {visit.visitors.visitor_number}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-slate-400 mb-1">Company</p>
+                      <p className="text-lg font-semibold text-slate-50 group-hover:text-green-300 transition-colors">
+                        {visit.visitors.company}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-slate-400 mb-1">Visiting</p>
+                      <p className="text-slate-50">
+                        {visit.person_being_visited}
+                      </p>
+                      <p className="text-sm text-slate-400">
+                        {visit.department}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-slate-400 mb-1">Purpose</p>
+                      <p className="text-slate-50">{visit.purpose}</p>
+                    </div>
                   </div>
 
-                  <div>
-                    <p className="text-sm text-slate-400">Company</p>
-                    <p className="text-lg font-semibold text-slate-50">
-                      {visit.visitors.company}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-400">Visiting</p>
-                    <p className="text-slate-50">
-                      {visit.person_being_visited}
-                    </p>
-                    <p className="text-sm text-slate-400">
-                      {visit.department}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-400">Purpose</p>
-                    <p className="text-slate-50">{visit.purpose}</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-4 border-t border-slate-700/50">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-blue-400">
-                      <Clock size={16} />
-                      <span className="text-sm font-medium">
-                        {durations[visit.id] || formatDuration(0)}
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-4 border-t border-slate-700/50">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                        <Clock size={16} className="text-blue-400" />
+                        <span className="text-sm font-semibold text-blue-300">
+                          {durations[visit.id] || formatDuration(0)}
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-500">
+                        {format(
+                          new Date(visit.check_in_at),
+                          'MMM d, HH:mm'
+                        )}
                       </span>
                     </div>
-                    <span className="text-xs text-slate-500">
-                      {format(
-                        new Date(visit.check_in_at),
-                        'MMM d, HH:mm'
-                      )}
-                    </span>
-                  </div>
 
-                  <button
-                    onClick={() =>
-                      handleCheckOutClick(visit.id, visit.visitors.full_name, visit.check_in_at)
-                    }
-                    disabled={checkingOut === visit.id}
-                    className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 disabled:opacity-50 disabled:cursor-not-allowed text-red-300 px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium"
-                  >
-                    {checkingOut === visit.id ? (
-                      <>
-                        <Loader size={16} className="animate-spin" />
-                        <span>Checking Out...</span>
-                      </>
-                    ) : (
-                      <>
-                        <LogOut size={16} />
-                        <span>Check Out</span>
-                      </>
-                    )}
-                  </button>
+                    <button
+                      onClick={() =>
+                        handleCheckOutClick(visit.id, visit.visitors.full_name, visit.check_in_at)
+                      }
+                      disabled={checkingOut === visit.id}
+                      className="flex items-center gap-2 bg-gradient-to-r from-red-600/20 to-red-700/20 hover:from-red-600/30 hover:to-red-700/30 disabled:opacity-50 disabled:cursor-not-allowed text-red-300 hover:text-red-200 px-4 py-2 rounded-xl border border-red-500/20 hover:border-red-500/30 transition-all duration-300 text-sm font-medium hover:scale-105"
+                    >
+                      {checkingOut === visit.id ? (
+                        <>
+                          <Loader size={16} className="animate-spin" />
+                          <span>Checking Out...</span>
+                        </>
+                      ) : (
+                        <>
+                          <LogOut size={16} />
+                          <span>Check Out</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -481,17 +518,19 @@ export function Dashboard() {
         )}
       </div>
 
-      {/* Check-out Confirmation Modal */}
+      {/* Enhanced Check-out Confirmation Modal */}
       {checkoutConfirm && checkoutDuration && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="glass rounded-lg max-w-md w-full overflow-hidden">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-scale-in">
+          <div className="glass rounded-2xl max-w-md w-full overflow-hidden border border-slate-700/50 shadow-2xl shadow-blue-500/10">
             {/* Modal Header */}
-            <div className="p-6 border-b border-slate-700">
+            <div className="p-6 border-b border-slate-700/50 bg-gradient-to-r from-slate-800/50 to-slate-900/50">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold">Confirm Check-out</h3>
+                <h3 className="text-xl font-bold bg-gradient-to-r from-slate-50 to-slate-300 bg-clip-text text-transparent">
+                  Confirm Check-out
+                </h3>
                 <button
                   onClick={cancelCheckOut}
-                  className="p-1 hover:bg-slate-800 rounded transition-colors"
+                  className="p-2 hover:bg-slate-800 rounded-xl transition-all hover:scale-110"
                 >
                   <X size={20} />
                 </button>
@@ -500,29 +539,37 @@ export function Dashboard() {
 
             {/* Modal Content */}
             <div className="p-6">
-              <p className="text-slate-400 mb-4">
+              <p className="text-slate-400 mb-3 text-sm">
                 You are checking out:
               </p>
-              <p className="text-2xl font-bold mb-6">{checkoutConfirm.visitorName}</p>
+              <p className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                {checkoutConfirm.visitorName}
+              </p>
 
-              <div className="bg-slate-800/50 rounded-lg p-4 mb-6">
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-4 mb-6 border border-slate-700/50">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-slate-400 mb-1">Duration</p>
-                    <p className="text-lg font-semibold text-blue-400">
-                      {checkoutConfirm.duration}
-                    </p>
+                    <p className="text-xs text-slate-400 mb-2 font-medium">Duration</p>
+                    <div className="flex items-center gap-2">
+                      <Clock size={18} className="text-blue-400" />
+                      <p className="text-lg font-bold text-blue-300">
+                        {checkoutConfirm.duration}
+                      </p>
+                    </div>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 mb-1">Status</p>
-                    <p className="text-lg font-semibold text-green-400">
-                      Ready
-                    </p>
+                    <p className="text-xs text-slate-400 mb-2 font-medium">Status</p>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp size={18} className="text-green-400" />
+                      <p className="text-lg font-bold text-green-300">
+                        Ready
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <p className="text-sm text-slate-400 mb-6">
+              <p className="text-sm text-slate-400 mb-6 bg-slate-800/30 p-3 rounded-lg border border-slate-700/30">
                 This visitor will be marked as checked out and removed from the active visitors list.
               </p>
 
@@ -530,14 +577,14 @@ export function Dashboard() {
               <div className="flex gap-3">
                 <button
                   onClick={cancelCheckOut}
-                  className="flex-1 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-50 font-medium transition-colors"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-50 font-medium transition-all hover:scale-105"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmCheckOut}
                   disabled={checkingOut === checkoutConfirm.visitId}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium transition-all hover:scale-105 shadow-lg shadow-red-500/20"
                 >
                   {checkingOut === checkoutConfirm.visitId ? (
                     <>
