@@ -362,3 +362,96 @@ export function subscribeToVisitorChanges(
     channel.unsubscribe()
   }
 }
+
+/**
+ * Subscribe to all visit changes (INSERT and UPDATE) across the entire visits table
+ *
+ * **Validates: Requirements 12.1, 12.2, 12.3, 12.5**
+ *
+ * @param callback - Called with event type, full visit (with visitor data), and previous visit state
+ * @returns Supabase channel — pass to `supabase.removeChannel()` to unsubscribe
+ */
+export function subscribeToVisitsChanges(
+  callback: (event: { type: 'INSERT' | 'UPDATE'; visit: any; oldVisit?: any }) => void
+) {
+  const channel = supabase
+    .channel('analytics_visits_changes')
+    .on(
+      'postgres_changes' as any,
+      { event: '*', schema: 'public', table: 'visits' },
+      async (payload: any) => {
+        const eventType = payload.eventType as 'INSERT' | 'UPDATE'
+        const visitId = payload.new?.id
+        if (!visitId) return
+
+        // Fetch full visit with joined visitor data
+        const { data } = await (supabase
+          .from('visits')
+          .select('*, visitors(*)')
+          .eq('id', visitId)
+          .single() as any)
+
+        if (data) {
+          callback({ type: eventType, visit: data, oldVisit: payload.old })
+        }
+      }
+    )
+    .subscribe()
+
+  return channel
+}
+
+/**
+ * A visit record with its associated visitor data joined
+ */
+export type VisitWithVisitor = Visit & {
+  visitors: Visitor
+}
+
+/**
+ * Fetch all visits within a date range, joined with visitor data.
+ * Supports optional filtering by departments and/or companies.
+ *
+ * **Validates: Requirements 2.5, 8.5, 9.5, 10.5**
+ *
+ * @param dateFrom - Start of date range (inclusive), matched against check_in_at
+ * @param dateTo   - End of date range (inclusive), matched against check_in_at
+ * @param options  - Optional filters: departments (by name) and companies (visitor company)
+ * @returns Array of visits with nested visitor data
+ */
+export async function getAnalyticsVisits(
+  dateFrom: Date,
+  dateTo: Date,
+  options?: {
+    departments?: string[]
+    companies?: string[]
+  }
+): Promise<VisitWithVisitor[]> {
+  // @ts-ignore - Supabase type system limitation with joined queries
+  let query = (supabase.from('visits') as any)
+    .select('*, visitors(*)')
+    .gte('check_in_at', dateFrom.toISOString())
+    .lte('check_in_at', dateTo.toISOString())
+    .order('check_in_at', { ascending: false })
+
+  // Filter by departments if specified
+  if (options?.departments && options.departments.length > 0) {
+    query = query.in('department', options.departments)
+  }
+
+  const { data, error } = await query
+
+  if (error) throw error
+
+  let results = data as VisitWithVisitor[]
+
+  // Filter by company in-memory (company lives on the visitor record)
+  if (options?.companies && options.companies.length > 0) {
+    const companySet = new Set(options.companies)
+    results = results.filter(
+      (v) => v.visitors && companySet.has(v.visitors.company)
+    )
+  }
+
+  return results
+}
