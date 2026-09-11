@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 /**
  * ReportsLayoutClient
@@ -33,6 +33,7 @@ import { DurationAnalyticsSection } from './sections/DurationAnalyticsSection'
 import { TimeAnalyticsSection } from './sections/TimeAnalyticsSection'
 import { RecentActivitySection } from './sections/RecentActivitySection'
 import { ErrorState } from './common/ErrorState'
+import { ExportButton } from './ExportButton'
 
 export function ReportsLayoutClient() {
   // -----------------------------------------------------------------------
@@ -93,8 +94,15 @@ export function ReportsLayoutClient() {
           </div>
         </div>
 
-        {/* Subscription status indicator */}
-        <SubscriptionBanner status={subscriptionStatus} error={subscriptionError} />
+        {/* Right-side controls: subscription status + export */}
+        <div className="flex items-center gap-3">
+          <SubscriptionBanner status={subscriptionStatus} error={subscriptionError} />
+          <ExportButton
+            metrics={metrics}
+            filters={filters}
+            disabled={isLoading}
+          />
+        </div>
       </div>
 
       {/* ── Filters ────────────────────────────────────────────────── */}
