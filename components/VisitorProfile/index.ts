@@ -7,3 +7,4 @@ export { VisitHistorySection, VisitHistorySectionSkeleton } from './VisitHistory
 export { VisitStatusBadge } from './VisitStatusBadge'
 export { DurationDisplay } from './DurationDisplay'
 export { LoadingStates, InitialLoadingSpinner } from './LoadingStates'
+export { ErrorState, PageErrorState, VisitorNotFoundError, SectionErrorState } from './ErrorStates'

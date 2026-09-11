@@ -12,6 +12,7 @@ interface VisitHistorySectionProps {
   hasMore?: boolean
   onLoadMore?: () => void
   isLoadingMore?: boolean
+  elapsedTimes?: Record<string, number>
 }
 
 export function VisitHistorySection({
@@ -20,6 +21,7 @@ export function VisitHistorySection({
   hasMore = false,
   onLoadMore,
   isLoadingMore = false,
+  elapsedTimes = {},
 }: VisitHistorySectionProps) {
   if (isLoading) {
     return <VisitHistorySectionSkeleton />
@@ -94,6 +96,7 @@ export function VisitHistorySection({
                     checkInAt={visit.check_in_at}
                     checkOutAt={visit.check_out_at}
                     duration={visit.duration}
+                    elapsedSeconds={elapsedTimes[visit.id]}
                   />
                 </td>
               </tr>
@@ -133,6 +136,7 @@ export function VisitHistorySection({
                   checkInAt={visit.check_in_at}
                   checkOutAt={visit.check_out_at}
                   duration={visit.duration}
+                  elapsedSeconds={elapsedTimes[visit.id]}
                 />
               </div>
             </div>

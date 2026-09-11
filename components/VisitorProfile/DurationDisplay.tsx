@@ -8,6 +8,7 @@ interface DurationDisplayProps {
   checkInAt: string
   checkOutAt?: string | null
   duration?: number | null
+  elapsedSeconds?: number
 }
 
 export function DurationDisplay({
@@ -15,6 +16,7 @@ export function DurationDisplay({
   checkInAt,
   checkOutAt,
   duration,
+  elapsedSeconds,
 }: DurationDisplayProps) {
   const [elapsedTime, setElapsedTime] = useState<string>('')
 
@@ -25,23 +27,30 @@ export function DurationDisplay({
       return
     }
 
-    // For active visits, calculate elapsed time
+    // For active visits, use provided elapsedSeconds or calculate
     if (status === 'checked_in') {
-      const calculateElapsed = () => {
-        const now = new Date()
-        const checkIn = new Date(checkInAt)
-        const minutes = Math.round(
-          (now.getTime() - checkIn.getTime()) / 60000
-        )
-        setElapsedTime(formatDuration(Math.max(0, minutes)))
+      if (elapsedSeconds !== undefined) {
+        // Convert seconds to minutes for formatDuration
+        const minutes = Math.floor(elapsedSeconds / 60)
+        setElapsedTime(formatDuration(minutes))
+      } else {
+        // Fallback: calculate elapsed time locally
+        const calculateElapsed = () => {
+          const now = new Date()
+          const checkIn = new Date(checkInAt)
+          const minutes = Math.round(
+            (now.getTime() - checkIn.getTime()) / 60000
+          )
+          setElapsedTime(formatDuration(Math.max(0, minutes)))
+        }
+
+        calculateElapsed()
+        const interval = setInterval(calculateElapsed, 60000) // Update every 60 seconds
+
+        return () => clearInterval(interval)
       }
-
-      calculateElapsed()
-      const interval = setInterval(calculateElapsed, 60000) // Update every 60 seconds
-
-      return () => clearInterval(interval)
     }
-  }, [status, checkInAt, checkOutAt, duration])
+  }, [status, checkInAt, checkOutAt, duration, elapsedSeconds])
 
   return <span className="text-sm font-medium text-blue-400">{elapsedTime}</span>
 }

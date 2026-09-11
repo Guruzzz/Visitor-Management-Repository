@@ -212,3 +212,153 @@ export async function getDepartments() {
   if (error) throw error
   return data
 }
+
+/**
+ * Get paginated visit history for a visitor
+ * 
+ * **Validates: Requirements 2.1, 2.4**
+ */
+export async function getVisitHistoryPaginated(
+  visitorId: string,
+  page: number = 0,
+  pageSize: number = 10
+) {
+  const start = page * pageSize
+  const { data, error } = await supabase
+    .from('visits')
+    .select('*')
+    .eq('visitor_id', visitorId)
+    .order('check_in_at', { ascending: false })
+    .range(start, start + pageSize - 1)
+
+  if (error) throw error
+  return data as Visit[]
+}
+
+/**
+ * Calculate aggregated statistics from visit history
+ * 
+ * **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5**
+ * 
+ * @param visits - Array of visits to calculate statistics from
+ * @returns Aggregated statistics including totals, averages, and top departments
+ */
+export function calculateStatistics(visits: Visit[]) {
+  const total = visits.length
+  const completed = visits.filter((v) => v.status === 'checked_out').length
+  const active = visits.filter((v) => v.status === 'checked_in').length
+
+  // Calculate average duration for completed visits only
+  let avgDuration: number | null = null
+  if (completed > 0) {
+    const totalDuration = visits
+      .filter((v) => v.status === 'checked_out' && v.duration)
+      .reduce((sum, v) => sum + (v.duration || 0), 0)
+    avgDuration = Math.round(totalDuration / completed)
+  }
+
+  // Calculate top 3 departments by frequency
+  const deptMap = new Map<string, number>()
+  visits
+    .filter((v) => v.status === 'checked_out')
+    .forEach((v) => {
+      deptMap.set(v.department, (deptMap.get(v.department) || 0) + 1)
+    })
+
+  const topDepartments = Array.from(deptMap.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3)
+
+  return {
+    total_visits: total,
+    completed_visits: completed,
+    active_visits: active,
+    average_duration_minutes: avgDuration,
+    top_departments: topDepartments,
+  }
+}
+
+/**
+ * Get complete visitor profile with statistics
+ * 
+ * **Validates: Requirements 1.1, 4.1**
+ */
+export async function getVisitorProfile(visitorId: string) {
+  const visitor = await getVisitor(visitorId)
+  const visitHistory = await getVisitHistory(visitorId)
+  const statistics = calculateStatistics(visitHistory)
+
+  return { visitor, statistics, visitHistory }
+}
+
+/**
+ * Subscribe to real-time updates for a specific visitor's visits
+ * Triggers callback on INSERT and UPDATE events
+ * 
+ * **Validates: Requirements 5.1, 5.2**
+ * 
+ * @param visitorId - UUID of the visitor
+ * @param callback - Function to call when visits change
+ * @returns Unsubscribe function
+ */
+export function subscribeToVisitorVisitChanges(
+  visitorId: string,
+  callback: (event: 'INSERT' | 'UPDATE', visit: Visit) => void
+): () => void {
+  const channel = supabase
+    .channel(`visits:changes:${visitorId}`)
+    .on(
+      'postgres_changes' as any,
+      {
+        event: '*',
+        schema: 'public',
+        table: 'visits',
+        filter: `visitor_id=eq.${visitorId}`,
+      },
+      (payload: any) => {
+        const event = payload.eventType as 'INSERT' | 'UPDATE'
+        const visit = payload.new as Visit
+        callback(event, visit)
+      }
+    )
+    .subscribe()
+
+  return () => {
+    channel.unsubscribe()
+  }
+}
+
+/**
+ * Subscribe to visitor profile data changes
+ * 
+ * **Validates: Requirements 5.1**
+ * 
+ * @param visitorId - UUID of the visitor
+ * @param callback - Function to call when visitor changes
+ * @returns Unsubscribe function
+ */
+export function subscribeToVisitorChanges(
+  visitorId: string,
+  callback: (visitor: Visitor) => void
+): () => void {
+  const channel = supabase
+    .channel(`visitor:changes:${visitorId}`)
+    .on(
+      'postgres_changes' as any,
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'visitors',
+        filter: `id=eq.${visitorId}`,
+      },
+      (payload: any) => {
+        callback(payload.new as Visitor)
+      }
+    )
+    .subscribe()
+
+  return () => {
+    channel.unsubscribe()
+  }
+}

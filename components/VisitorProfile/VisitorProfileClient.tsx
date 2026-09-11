@@ -1,10 +1,10 @@
 ﻿'use client'
 
-import { useState, useEffect } from 'react'
-import { ArrowLeft, AlertCircle } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { getVisitor, getVisitHistory } from '@/lib/visitors'
-import { withRetry } from '@/lib/retry'
+import { useVisitorProfile } from '@/lib/hooks/useVisitorProfile'
+import { useVisitHistory } from '@/lib/hooks/useVisitHistory'
+import { useRealtimeUpdates } from '@/lib/hooks/useRealtimeUpdates'
 import {
   ProfileHeader,
   ProfileDetailsSection,
@@ -12,132 +12,37 @@ import {
   TopDepartmentsSection,
   VisitHistorySection,
   LoadingStates,
+  ErrorState,
+  VisitorNotFoundError,
 } from './index'
-import type { Visitor, Visit } from '@/lib/visitors'
-
-interface VisitorStatistics {
-  total_visits: number
-  completed_visits: number
-  active_visits: number
-  average_duration_minutes: number | null
-  top_departments: Array<{ name: string; count: number }>
-}
 
 interface VisitorProfileClientProps {
   visitorId: string
 }
 
 export function VisitorProfileClient({ visitorId }: VisitorProfileClientProps) {
-  const [visitor, setVisitor] = useState<Visitor | null>(null)
-  const [visits, setVisits] = useState<Visit[]>([])
-  const [statistics, setStatistics] = useState<VisitorStatistics | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [hasMore, setHasMore] = useState(false)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  // Use hooks for data fetching
+  const {
+    visitor,
+    statistics,
+    isLoading,
+    error: profileError,
+    refetch: refetchProfile,
+  } = useVisitorProfile(visitorId)
 
-  // Initial data fetch
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
+  const {
+    visits,
+    isLoading: isLoadingMore,
+    error: visitError,
+    hasMore,
+    loadMore,
+  } = useVisitHistory(visitorId, 10)
 
-        const visitorData = await withRetry(
-          () => getVisitor(visitorId),
-          { maxAttempts: 3 }
-        )
+  // Real-time elapsed time updates
+  const { elapsedTimes } = useRealtimeUpdates(visits)
 
-        const visitHistory = await withRetry(
-          () => getVisitHistory(visitorId),
-          { maxAttempts: 3 }
-        )
-
-        // Calculate statistics
-        const stats = calculateStatistics(visitHistory || [])
-
-        setVisitor(visitorData)
-        setVisits(visitHistory || [])
-        setStatistics(stats)
-        setHasMore((visitHistory?.length || 0) >= 10)
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : 'Failed to load visitor data'
-        setError(message)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [visitorId])
-
-  const calculateStatistics = (visitsList: Visit[]): VisitorStatistics => {
-    const total = visitsList.length
-    const completed = visitsList.filter((v) => v.status === 'checked_out').length
-    const active = visitsList.filter((v) => v.status === 'checked_in').length
-
-    let avgDuration: number | null = null
-    if (completed > 0) {
-      const totalDuration = visitsList
-        .filter((v) => v.status === 'checked_out' && v.duration)
-        .reduce((sum, v) => sum + (v.duration || 0), 0)
-      avgDuration = Math.round(totalDuration / completed)
-    }
-
-    // Calculate top departments
-    const deptMap = new Map<string, number>()
-    visitsList
-      .filter((v) => v.status === 'checked_out')
-      .forEach((v) => {
-        deptMap.set(v.department, (deptMap.get(v.department) || 0) + 1)
-      })
-
-    const topDepartments = Array.from(deptMap.entries())
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 3)
-
-    return {
-      total_visits: total,
-      completed_visits: completed,
-      active_visits: active,
-      average_duration_minutes: avgDuration,
-      top_departments: topDepartments,
-    }
-  }
-
-  const handleLoadMore = async () => {
-    try {
-      setIsLoadingMore(true)
-      const newPage = currentPage + 1
-      const offset = newPage * 10
-
-      const moreVisits = await withRetry(
-        () => getVisitHistory(visitorId),
-        { maxAttempts: 3 }
-      )
-
-      if (!moreVisits || moreVisits.length === 0) {
-        setHasMore(false)
-      } else {
-        // Since getVisitHistory fetches all, we need to paginate client-side
-        const newVisits = moreVisits.slice(offset, offset + 10)
-        if (newVisits.length === 0) {
-          setHasMore(false)
-        } else {
-          setVisits((prev) => [...prev, ...newVisits])
-          setCurrentPage(newPage)
-          setHasMore(newVisits.length === 10)
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load more visits:', err)
-    } finally {
-      setIsLoadingMore(false)
-    }
-  }
+  // Determine which error to display (profile error takes priority)
+  const error = profileError || visitError
 
   if (isLoading) {
     return (
@@ -174,24 +79,11 @@ export function VisitorProfileClient({ visitorId }: VisitorProfileClientProps) {
             Back
           </Link>
         </div>
-        <div className="glass p-8 rounded-lg border border-red-500/30 bg-red-500/10">
-          <div className="flex items-start gap-4">
-            <AlertCircle size={24} className="text-red-400 flex-shrink-0 mt-1" />
-            <div className="flex-1">
-              <h2 className="text-lg font-semibold text-red-300 mb-2">
-                Error Loading Profile
-              </h2>
-              <p className="text-sm text-red-400 mb-4">{error}</p>
-              <Link
-                href="/dashboard/visitors"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-              >
-                <ArrowLeft size={18} />
-                Return to Visitors
-              </Link>
-            </div>
-          </div>
-        </div>
+        <ErrorState
+          error={error}
+          onRetry={() => refetchProfile()}
+          showRetry={!error.toLowerCase().includes('not found')}
+        />
       </div>
     )
   }
@@ -211,28 +103,12 @@ export function VisitorProfileClient({ visitorId }: VisitorProfileClientProps) {
             Back
           </Link>
         </div>
-        <div className="glass p-8 rounded-lg border border-red-500/30 bg-red-500/10 text-center">
-          <AlertCircle size={32} className="mx-auto mb-4 text-red-400" />
-          <h2 className="text-lg font-semibold text-red-300 mb-2">
-            Visitor Not Found
-          </h2>
-          <p className="text-sm text-red-400 mb-4">
-            The visitor you are looking for does not exist.
-          </p>
-          <Link
-            href="/dashboard/visitors"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-          >
-            <ArrowLeft size={18} />
-            Return to Visitors
-          </Link>
-        </div>
+        <VisitorNotFoundError />
       </div>
     )
   }
 
-  const lastVisitDate =
-    visits.length > 0 ? visits[0].check_in_at : null
+  const lastVisitDate = visits.length > 0 ? visits[0].check_in_at : null
 
   return (
     <div>
@@ -279,8 +155,9 @@ export function VisitorProfileClient({ visitorId }: VisitorProfileClientProps) {
         <VisitHistorySection
           visits={visits}
           hasMore={hasMore}
-          onLoadMore={handleLoadMore}
+          onLoadMore={loadMore}
           isLoadingMore={isLoadingMore}
+          elapsedTimes={elapsedTimes}
         />
       </div>
     </div>
